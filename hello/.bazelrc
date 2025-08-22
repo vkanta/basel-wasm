@@ -1,0 +1,5 @@
+build --enable_bzlmod
+test  --enable_bzlmod
+build --color=yes
+test  --test_output=errors
+

@@ -1,0 +1,8 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+rust_binary(
+    name = "hello",
+    srcs = ["main.rs"],
+    edition = "2021",
+    deps = ["//lib/utils:utils"],
+)
