@@ -1,0 +1,25 @@
+[package]
+name = "run-me"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wit-bindgen-rt = { version = "0.27.0", features = ["bitflags"] }
+
+[profile.release]
+codegen-units = 1
+opt-level = "s"
+debug = false
+strip = true
+lto = true
+
+[package.metadata.component]
+package = "docs:calculate"
+
+[package.metadata.component.dependencies]
+# added in order to import other components and wit's
+[package.metadata.component.target]
+path = "wit"
+[package.metadata.component.target.dependencies]
+"docs:calculate" = { path = "../calculate/wit" }
+"docs:adder" = { path = "../adder/wit" }

@@ -1,0 +1,8 @@
+package docs:calculate;
+
+world runme {
+    import docs:calculate/calculate@0.1.0;
+    import docs:adder/add@0.1.0;
+
+    
+}

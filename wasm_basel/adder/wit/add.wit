@@ -1,0 +1,22 @@
+package docs:adder@0.1.0;
+interface types {
+    record operants {
+        a: u32, 
+        b: u32,
+    }
+}
+
+
+
+interface add {
+    use types.{operants};
+    resource addresource{
+        constructor(); //it has to go first  
+      add: func(operants:operants ) -> u32;
+    }
+    
+}
+
+world adder {
+    export add;
+}

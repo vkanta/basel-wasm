@@ -1,0 +1,35 @@
+# Bind http_file for adapter
+http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+
+http_file(
+    name = "wasi_preview1_command_adapter",
+    urls = ["https://github.com/bytecodealliance/wasmtime/releases/download/v36.0.1/wasi_snapshot_preview1.command.wasm"],
+    sha256 = "0846a8dfc487a874f97ba377ddb7f63a78f42408627d8d150b4e0322c8e38b17",
+)
+
+
+http_file(
+    name = "wasi_preview1_reactor_adapter",
+    urls = ["https://github.com/bytecodealliance/wasmtime/releases/download/v36.0.1/wasi_snapshot_preview1.reactor.wasm"],
+    sha256 = "c744df80a8777d3fddaab320c96d4e0613f32e613b865284243638c0825a5075",
+)
+# rules_rust toolchains
+bazel_dep(name = "rules_rust", version = "0.63.0")
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(edition = "2021")
+use_repo(rust, "rust_toolchains")
+
+# crates.io deps via crate_universe (correct extension name is 'crate')
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.spec(package = "wit-bindgen-rt", version = "0.44.0")
+crate.from_specs(name = "crates")
+use_repo(crate, "crates")
+
+# Hermetic C/C++ toolchains (Zig)
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.0.1")
+hcc = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(hcc, "zig_sdk")
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+)

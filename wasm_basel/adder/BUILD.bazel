@@ -1,0 +1,30 @@
+load("@rules_rust//rust:defs.bzl", "rust_shared_library")
+
+package(default_visibility = ["//visibility:public"])
+
+rust_shared_library(
+    name = "adder_core",
+    crate_root = "src/lib.rs",
+    srcs = glob(["src/**/*.rs", "src/*.rs"]),
+    edition = "2021",
+    deps = ["@crates//:wit-bindgen-rt"],
+)
+
+genrule(
+    name = "adder.component.wasm.pure",
+    srcs = [
+        ":adder_core",
+        "@wasi_preview1_reactor_adapter//file",
+    ] + glob(["wit/**/*.wit", "wit/*.wit"]),
+    outs = ["adder.component.wasm"],
+    cmd = """
+set -euo pipefail
+CORE="$(location :adder_core)"
+ADAPTER="$(location @wasi_preview1_reactor_adapter//file)"
+OUT="$@"
+
+# Componentize core wasm using the WASI preview1 *reactor* adapter
+wasm-tools component new "$$CORE" --adapt wasi_snapshot_preview1="$$ADAPTER" -o "$$OUT"
+""" ,
+    tags = ["requires-wasm-tools"],
+)

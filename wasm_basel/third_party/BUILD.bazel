@@ -1,0 +1,7 @@
+package(default_visibility = ["//visibility:public"])
+
+# Provide the adapter as a Bazel target. You must place the file(s) under third_party/wasi_adapters.
+exports_files([
+    "wasi_adapters/wasi_snapshot_preview1.command.wasm",
+    "wasi_adapters/wasi_snapshot_preview1.reactor.wasm",
+])

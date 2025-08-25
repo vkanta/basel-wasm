@@ -1,0 +1,52 @@
+#########################
+# Pure Bazel composition
+#########################
+
+genrule(
+    name = "hello.wasm.pure",
+    srcs = [
+        "//calculate:calculate.component.wasm.pure",
+        "//adder:adder.component.wasm.pure",
+    ],
+    outs = ["hello.wasm"],
+    cmd = """
+set -euo pipefail
+CALC="$(location //calculate:calculate.component.wasm.pure)"
+ADDR="$(location //adder:adder.component.wasm.pure)"
+OUT="$@"
+wac plug "$$CALC" --plug "$$ADDR" -o "$$OUT"
+""",
+    tags = ["requires-wac"],
+)
+
+
+sh_binary(
+    name = "run_hello",
+    srcs = ["run_hello.sh"],
+    data = [":hello.wasm", ":hello.wasm.pure"],
+    visibility = ["//visibility:public"],
+)
+
+
+sh_binary(
+    name = "eval-expression",
+    srcs = ["eval_expression.sh"],
+    data = [":hello.wasm", ":hello.wasm.pure"],
+    visibility = ["//visibility:public"],
+)
+
+
+sh_binary(
+    name = "run-with-wac",
+    srcs = ["run_with_wac.sh"],
+    data = [":hello.wasm", ":hello.wasm.pure"],
+    visibility = ["//visibility:public"],
+)
+
+
+sh_binary(
+    name = "run-with-jco",
+    srcs = ["run_with_jco.sh"],
+    data = [":hello.wasm", ":hello.wasm.pure"],
+    visibility = ["//visibility:public"],
+)
