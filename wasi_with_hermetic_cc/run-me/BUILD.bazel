@@ -1,0 +1,9 @@
+sh_binary(
+    name = "run_hello",
+    srcs = ["run_hello.sh"],
+    data = [
+        "//adder:adder.component.wasm.pure",
+        "//calculate:calculate.component.wasm.pure",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,2 @@
+# Build for WASI (rules_rust platform) and be verbose on toolchains
+build --platforms=@rules_rust//rust/platform:wasi

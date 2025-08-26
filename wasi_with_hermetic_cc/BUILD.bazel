@@ -1,0 +1,8 @@
+filegroup(
+    name = "workspace_srcs",
+    srcs = glob(["**"], exclude = [
+        "bazel-*/**", "bazel-bin/**", "bazel-out/**", "bazel-testlogs/**",
+        "target/**", "node_modules/**", ".git/**", ".idea/**",
+    ]),
+    visibility = ["//visibility:public"],
+)

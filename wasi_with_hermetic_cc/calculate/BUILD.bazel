@@ -1,0 +1,17 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+rust_binary(
+    name = "calculate_bin",
+    srcs = ["src/main.rs"],
+    edition = "2021",
+)
+
+genrule(
+    name = "calculate.component.wasm.pure",
+    srcs = [":calculate_bin"],
+    outs = ["calculate.component.wasm"],
+    cmd = "cp $(location :calculate_bin) $@",
+    visibility = ["//visibility:public"],
+)

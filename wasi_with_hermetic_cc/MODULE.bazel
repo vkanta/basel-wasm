@@ -1,0 +1,22 @@
+bazel_dep(name = "platforms", version = "0.0.11")
+bazel_dep(name = "rules_rust", version = "0.63.0")
+bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "hermetic_cc_toolchain", version = "4.0.1")
+
+# Rust toolchains (includes wasm32-wasi target)
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2021",
+    versions = ["1.82.0"],
+    extra_target_triples = ["wasm32-wasi"],
+)
+use_repo(rust, "rust_toolchains")
+register_toolchains("@rust_toolchains//:all")
+
+# Hermetic C/C++ toolchains via Zig (provides toolchains incl. wasm32-wasi)
+hcc = use_extension("@hermetic_cc_toolchain//toolchain:ext.bzl", "toolchains")
+use_repo(hcc, "zig_sdk")
+register_toolchains(
+    "@zig_sdk//toolchain/...",
+    "@zig_sdk//libc_aware/toolchain/...",
+)
