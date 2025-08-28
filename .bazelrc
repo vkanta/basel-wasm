@@ -1,0 +1,2 @@
+# Pin default platform to WASI so all targets (including transitive) build as wasm32-wasi
+build --platforms=@rules_rust//rust/platform:wasi
