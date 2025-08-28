@@ -35,3 +35,7 @@ impl Guest for Implementation {
 //this is missing from the basic example 
 bindings::export!(Implementation with_types_in bindings);
 
+// Export a no-op `_start` symbol so the module can be wrapped as a WASI Command core module
+#[no_mangle]
+pub extern "C" fn _start() {}
+

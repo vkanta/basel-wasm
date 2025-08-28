@@ -20,33 +20,38 @@ wac plug "$$CALC" --plug "$$ADDR" -o "$$OUT"
 )
 
 
-sh_binary(
+
+genrule(
     name = "run_hello",
-    srcs = ["run_hello.sh"],
-    data = [":hello.wasm", ":hello.wasm.pure"],
+    srcs = [":hello.wasm"],
+    outs = ["run_hello.out"],
+    # Use jco which knows how to run WASI Command components
+    cmd = "jco run $(location :hello.wasm) >$@",
     visibility = ["//visibility:public"],
 )
 
-
-sh_binary(
-    name = "eval-expression",
-    srcs = ["eval_expression.sh"],
-    data = [":hello.wasm", ":hello.wasm.pure"],
+genrule(
+    name = "eval_expression",
+    srcs = [":hello.wasm", ":hello.wasm.pure"],
+    outs = ["eval_expression.out"],
+    cmd = "wasmtime $(location :hello.wasm) --invoke eval_expression >$@",
     visibility = ["//visibility:public"],
 )
 
-
-sh_binary(
+genrule(
     name = "run-with-wac",
-    srcs = ["run_with_wac.sh"],
-    data = [":hello.wasm", ":hello.wasm.pure"],
+    srcs = [":hello.wasm", ":hello.wasm.pure"],
+    outs = ["run_with_wac.out"],
+    # wac doesn't provide a 'run' subcommand; use jco to execute the composed component.
+    cmd = "jco run $(location :hello.wasm) >$@",
     visibility = ["//visibility:public"],
 )
 
-
-sh_binary(
+genrule(
     name = "run-with-jco",
-    srcs = ["run_with_jco.sh"],
-    data = [":hello.wasm", ":hello.wasm.pure"],
+    srcs = [":hello.wasm", ":hello.wasm.pure"],
+    outs = ["run_with_jco.out"],
+    # Use jco to run a WASI Command component
+    cmd = "jco run $(location :hello.wasm) >$@",
     visibility = ["//visibility:public"],
 )

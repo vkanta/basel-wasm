@@ -32,3 +32,8 @@ impl calculate::Guest for Implementation {
 
 bindings::export!(Implementation with_types_in bindings);
 
+// Export a no-op `_start` symbol so the module can be wrapped as a WASI Command core module
+// The adapter expects a `_start` export for command-style components.
+#[no_mangle]
+pub extern "C" fn _start() {}
+

@@ -8,22 +8,20 @@ rust_shared_library(
     srcs = glob(["src/**/*.rs", "src/*.rs"]),
     edition = "2021",
     deps = ["@crates//:wit-bindgen-rt"],
-)
+    platform = "@rules_rust//rust/platform:wasi",
+    )
 
 genrule(
     name = "calculate.component.wasm.pure",
-    srcs = [
-        ":calculate_core",
-        "@wasi_preview1_reactor_adapter//file",
-    ] + glob(["wit/**/*.wit", "wit/*.wit"]),
+    srcs = [":calculate_core", "//third_party:wasi_adapters/wasi_snapshot_preview1.command.wasm"] + glob(["wit/**/*.wit", "wit/*.wit"]),
     outs = ["calculate.component.wasm"],
     cmd = """
 set -euo pipefail
 CORE="$(location :calculate_core)"
-ADAPTER="$(location @wasi_preview1_reactor_adapter//file)"
+ADAPTER="$(location //third_party:wasi_adapters/wasi_snapshot_preview1.command.wasm)"
 OUT="$@"
 
-# Componentize core wasm using the WASI preview1 *reactor* adapter
+# Componentize core wasm using the preview1 adapter (module imports wasi_snapshot_preview1)
 wasm-tools component new "$$CORE" --adapt wasi_snapshot_preview1="$$ADAPTER" -o "$$OUT"
 """ ,
     tags = ["requires-wasm-tools"],
